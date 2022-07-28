@@ -25,7 +25,7 @@
     self.TEST_USER_ID = self.TEST_USER_ID_ONE;
     self.TEST_GROUP_ID = @"GROUP_ID_HERE";
     self.TEST_PHRASE = @"never forget tomorrow is a new day";
-    self.TEST_CONTENT_LANGUAGE = @"es-MX";
+    self.TEST_CONTENT_LANGUAGE = @"en-US";
 
     NSMutableDictionary * styles = [[NSMutableDictionary alloc] init];
     [styles setObject:@"#FBC132" forKey:@"kThemeColor"];
