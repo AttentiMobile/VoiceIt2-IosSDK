@@ -584,6 +584,44 @@ NSString * notificationURL = @"";
     [task resume];
 }
 
+
+- (void)createFaceEnrollment:(NSString *)userId
+                   imageData:(NSData *)imageData
+                    callback:(void (^)(NSString *))callback {
+    if([userId isEqualToString:@""] || ![[self getFirst:userId numChars:4] isEqualToString:@"usr_"]){
+        @throw [NSException exceptionWithName:@"Cannot Call Face Enrollment"
+                                       reason:@"Invalid userId passed"
+                                     userInfo:nil];
+        return;
+    }
+
+    NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; charset=utf-8; boundary=%@", self.boundary];
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc]
+                                    initWithURL:[[NSURL alloc] initWithString:[[NSString alloc] initWithFormat:@"%@%@",[self buildURL:@"enrollments/face"], notificationURL]]];
+    NSURLSession *session = [NSURLSession sharedSession];
+    [request setHTTPMethod:@"POST"];
+
+    [request setValue:contentType forHTTPHeaderField: @"Content-Type"];
+    [request addValue:platformId forHTTPHeaderField:@"platformId"];
+    [request addValue:platformVersion forHTTPHeaderField:@"platformVersion"];
+    [request addValue:self.authHeader forHTTPHeaderField:@"Authorization"];
+
+    NSDictionary *params = @{@"userId": userId};
+    NSMutableData *body = [NSMutableData data];
+    [self addParamsToBody:body parameters:params];
+    [self addImageToBody:body imageData:imageData fieldName:@"photo"];
+    [self endBody:body];
+
+    NSURLSessionDataTask *task =  [session uploadTaskWithRequest:request fromData:body completionHandler:^(NSData *data, NSURLResponse *response, NSError *error){
+        // Send Result
+        NSString *result = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        if(callback){
+            callback(result);
+        }
+    }];
+    [task resume];
+}
+
 - (void)createFaceEnrollment:(NSString *)userId
                    videoPath:(NSString*)videoPath
                     callback:(void (^)(NSString *))callback {

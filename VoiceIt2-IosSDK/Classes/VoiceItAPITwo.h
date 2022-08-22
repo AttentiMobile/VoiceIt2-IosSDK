@@ -64,6 +64,10 @@
                      callback:(void (^)(NSString *))callback;
 
 - (void)createFaceEnrollment:(NSString *)userId
+                   imageData:(NSData *)imageData
+                    callback:(void (^)(NSString *))callback;
+
+- (void)createFaceEnrollment:(NSString *)userId
                    videoPath:(NSString *)videoPath
                     callback:(void (^)(NSString *))callback;
 
